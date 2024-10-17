@@ -17,15 +17,17 @@ import seaborn as sns
 import streamlit as st
 
 def plot_pollutant_trends(df, start_date, end_date):
-    st.title(f'Tren PM2.5 dan PM10 dari {start_date} hingga {end_date}')
-    
+    st.markdown(f"""
+        ### Tren PM2.5 dan PM10 dari {start_date} hingga {end_date}
+    """)
+
     # Plotting PM2.5 over time for all stations
     plt.style.use('dark_background')  # Mengatur style dengan background gelap
     plt.figure(figsize=(10, 5))  # Memperbesar ukuran plot
 
     # Plot PM2.5 dengan warna berdasarkan station
     sns.lineplot(x='date_time', y='PM2.5', hue='station', data=df, errorbar=None)
-    plt.title(f'Tren PM2.5 dari {start_date} hingga {end_date}', fontsize=16, color='white')
+    plt.title(f'Tren PM2.5', fontsize=16, color='white')
     plt.xlabel('Tanggal', fontsize=12, color='white')
     plt.ylabel('Konsentrasi PM2.5 (µg/m³)', fontsize=12, color='white')
 
@@ -34,7 +36,7 @@ def plot_pollutant_trends(df, start_date, end_date):
     plt.yticks(fontsize=10, color='white')
 
     # Mengatur posisi legend di luar plot
-    plt.legend(title='Stasiun', loc='upper left', bbox_to_anchor=(1, 1), title_fontsize='12', fontsize=10, labelcolor='white', frameon=False)
+    plt.legend(title='Station', loc='upper left', bbox_to_anchor=(1, 1), title_fontsize='12', fontsize=10, labelcolor='white', frameon=False)
 
     # Menampilkan plot di Streamlit
     plt.tight_layout()
@@ -43,14 +45,14 @@ def plot_pollutant_trends(df, start_date, end_date):
     # Plotting PM10 over time for all stations
     plt.figure(figsize=(10, 5))
     sns.lineplot(x='date_time', y='PM10', hue='station', data=df, errorbar=None)
-    plt.title(f'Tren PM10 dari {start_date} hingga {end_date}', fontsize=16, color='white')
+    plt.title(f'Tren PM10', fontsize=16, color='white')
     plt.xlabel('Tanggal', fontsize=12, color='white')
     plt.ylabel('Konsentrasi PM10 (µg/m³)', fontsize=12, color='white')
 
     plt.xticks(rotation=45, fontsize=10, color='white')
     plt.yticks(fontsize=10, color='white')
 
-    plt.legend(title='Stasiun', loc='upper left', bbox_to_anchor=(1, 1), title_fontsize='12', fontsize=10, labelcolor='white', frameon=False)
+    plt.legend(title='Station', loc='upper left', bbox_to_anchor=(1, 1), title_fontsize='12', fontsize=10, labelcolor='white', frameon=False)
 
     # Tampilkan plot di Streamlit
     plt.tight_layout()
@@ -189,7 +191,7 @@ def box_plot_station(df):
     # Boxplot untuk melihat distribusi PM2.5 di setiap stasiun
     plt.figure(figsize=(5,3))
     sns.boxplot(x='station', y='PM2.5', data=df, palette='Set3', flierprops=flierprops)
-    plt.title('Perbandingan Distribusi PM2.5 Antar Stasiun')
+    plt.title('Perbandingan Distribusi PM2.5 Antar Station', fontsize=10)
     # Mengatur rotasi x-axis dan warna ticks
     plt.xticks(rotation=45, color='white', fontsize=5)
     plt.yticks(color='white', fontsize=5)
@@ -203,7 +205,7 @@ def box_plot_station(df):
     # Boxplot untuk melihat distribusi PM10 di setiap stasiun
     plt.figure(figsize=(5,3))
     sns.boxplot(x='station', y='PM10', data=df, palette='Set3', flierprops=flierprops)
-    plt.title('Perbandingan Distribusi PM10 Antar Stasiun')
+    plt.title('Perbandingan Distribusi PM10 Antar Station', fontsize = 10)
     # Mengatur rotasi x-axis dan warna ticks
     plt.xticks(rotation=45, color='white', fontsize=5)
     plt.yticks(color='white', fontsize=5)
@@ -293,16 +295,18 @@ if menu == 'Temperature & Wind Direction':
     grouped_df.columns = ['Max TEMP', 'Mean TEMP', 'Min TEMP']
     grouped_df = grouped_df.reset_index()
 
-    # Menambahkan filter berdasarkan station
-    all_stations = grouped_df['station'].unique()  # Mendapatkan semua stasiun unik
-    selected_stations = st.multiselect('Pilih Stasiun', all_stations, default=all_stations)
+    # Menampilkan keterangan untuk agregasi suhu
+    st.subheader("📊 Agregasi Suhu Maksimum, Rata-rata, dan Minimum per Stasiun dan Arah Angin")
+    st.markdown("Tabel di bawah menunjukkan suhu maksimum, suhu rata-rata, dan suhu minimum di setiap stasiun berdasarkan arah angin yang terdeteksi.")
+
+  # Pastikan all_stations dalam bentuk list
+    all_stations = list(grouped_df['station'].unique())  # Mendapatkan semua stasiun unik dan mengonversi ke list
+    default_stations = all_stations[:2]  # Pilih dua stasiun pertama sebagai default
+    selected_stations = st.multiselect('Pilih Stasiun', all_stations, default=default_stations)
 
     # Memfilter data berdasarkan stasiun yang dipilih
     filtered_station_df = grouped_df[grouped_df['station'].isin(selected_stations)]
 
-    # Menampilkan keterangan untuk agregasi suhu
-    st.subheader("📊 Agregasi Suhu Maksimum, Rata-rata, dan Minimum per Stasiun dan Arah Angin")
-    st.markdown("Tabel di bawah menunjukkan suhu maksimum, suhu rata-rata, dan suhu minimum di setiap stasiun berdasarkan arah angin yang terdeteksi.")
 
     # Memilih kolom numerik untuk formatting
     numeric_columns = filtered_station_df.select_dtypes(include='number').columns
@@ -315,6 +319,12 @@ if menu == 'Temperature & Wind Direction':
         'font-size': '11pt',
     }).set_caption("Agregasi Suhu per Stasiun dan Arah Angin"))
 
+
+    st.markdown(
+        """
+        ### Wind Direction
+        """
+    )
     # Plot Mean TEMP berdasarkan station dan wd dengan background hitam dan teks putih
     plt.style.use('dark_background')  # Mengatur style dengan background gelap
     plt.figure(figsize=(10, 5))  # Memperbesar ukuran plot
