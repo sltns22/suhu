@@ -2,6 +2,7 @@ import pandas as pd
 import seaborn as sns
 import matplotlib.pyplot as plt
 import streamlit as st
+import os 
 
 st.set_page_config(
     page_title="Dashboard Polutan",  # Judul halaman
@@ -212,6 +213,7 @@ def filter_ytd(df, selected_year, selected_month):
 
 # Sidebar untuk memilih year dan month
 with st.sidebar:
+    st.write(os.listdir())
     st.image('logo.png')
 
 st.sidebar.title("Filter Data")
