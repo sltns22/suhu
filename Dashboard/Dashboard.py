@@ -189,7 +189,7 @@ def box_plot_station(df):
     st.pyplot(plt)
 
 # Membaca file CSV
-all_df = pd.read_csv('https://github.com/sltns22/suhu/blob/master/Dashboard/all_df.csv')
+all_df = pd.read_csv('https://raw.githubusercontent.com/sltns22/suhu/master/Dashboard/all_df.csv')
 
 # Konversi kolom 'date_time' menjadi tipe datetime
 all_df['date_time'] = pd.to_datetime(all_df['date_time'])
