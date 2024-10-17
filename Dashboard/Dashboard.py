@@ -10,54 +10,40 @@ st.set_page_config(
     initial_sidebar_state="expanded"  # Sidebar dalam keadaan terbuka
 )
 
+def pollutan_trend_by_month(df):
+    # Menghitung rata-rata bulanan
+    df['month'] = df['date_time'].dt.month  # Menambahkan kolom 'month'
+    overall_monthly_avg = df.groupby('month')[['PM2.5', 'PM10']].mean().reset_index()
 
-# Fungsi untuk membuat plot tren polutan
-import matplotlib.pyplot as plt
-import seaborn as sns
-import streamlit as st
-
-def plot_pollutant_trends(df, start_date, end_date):
-    st.markdown(f"""
-        ### Tren PM2.5 dan PM10 dari {start_date} hingga {end_date}
-    """)
-
-    # Plotting PM2.5 over time for all stations
-    plt.style.use('dark_background')  # Mengatur style dengan background gelap
-    plt.figure(figsize=(10, 5))  # Memperbesar ukuran plot
-
-    # Plot PM2.5 dengan warna berdasarkan station
-    sns.lineplot(x='date_time', y='PM2.5', hue='station', data=df, errorbar=None)
-    plt.title(f'Tren PM2.5', fontsize=16, color='white')
-    plt.xlabel('Tanggal', fontsize=12, color='white')
-    plt.ylabel('Konsentrasi PM2.5 (µg/m³)', fontsize=12, color='white')
-
-    # Memperjelas rotasi dan ukuran teks pada x-axis dan y-axis
-    plt.xticks(rotation=45, fontsize=10, color='white')
-    plt.yticks(fontsize=10, color='white')
-
-    # Mengatur posisi legend di luar plot
-    plt.legend(title='Station', loc='upper left', bbox_to_anchor=(1, 1), title_fontsize='12', fontsize=10, labelcolor='white', frameon=False)
-
-    # Menampilkan plot di Streamlit
-    plt.tight_layout()
+    # Plot rata-rata keseluruhan PM10 dari semua stasiun
+    plt.figure(figsize=(10,5))
+    plt.fill_between(overall_monthly_avg['month'], 0, overall_monthly_avg['PM10'], color='gray', alpha=0.2)
+    sns.lineplot(data=overall_monthly_avg, x='month', y='PM10', color='blue', label='Rata-rata Semua Stasiun')
+    plt.title('Rata-rata Bulanan PM10 Semua Stasiun (2013-2017)')
+    plt.xlabel('Bulan')
+    plt.ylabel('PM10')
+    plt.xticks(rotation=45)
+    plt.legend()
     st.pyplot(plt)
 
-    # Plotting PM10 over time for all stations
-    plt.figure(figsize=(10, 5))
-    sns.lineplot(x='date_time', y='PM10', hue='station', data=df, errorbar=None)
-    plt.title(f'Tren PM10', fontsize=16, color='white')
-    plt.xlabel('Tanggal', fontsize=12, color='white')
-    plt.ylabel('Konsentrasi PM10 (µg/m³)', fontsize=12, color='white')
+    # Highlight bulan kritis dengan lonjakan PM10
+    critical_months = [1, 12]  # Contoh bulan dengan kualitas udara buruk
 
-    plt.xticks(rotation=45, fontsize=10, color='white')
-    plt.yticks(fontsize=10, color='white')
+    # Plot dengan highlight pada bulan kritis
+    plt.figure(figsize=(10,5))
+    plt.fill_between(overall_monthly_avg['month'], 0, overall_monthly_avg['PM10'], color='gray', alpha=0.2)
+    sns.lineplot(data=overall_monthly_avg, x='month', y='PM10', color='blue', label='Rata-rata Semua Stasiun')
 
-    plt.legend(title='Station', loc='upper left', bbox_to_anchor=(1, 1), title_fontsize='12', fontsize=10, labelcolor='white', frameon=False)
+    # Highlight bulan kritis dengan warna yang berbeda
+    for month in critical_months:
+        plt.axvspan(month-0.5, month+0.5, color='red', alpha=0.3)
 
-    # Tampilkan plot di Streamlit
-    plt.tight_layout()
+    plt.title('Rata-rata Bulanan PM10 dengan Highlight Bulan Kritis (2013-2017)')
+    plt.xlabel('Bulan')
+    plt.ylabel('PM10')
+    plt.xticks(rotation=45)
+    plt.legend()
     st.pyplot(plt)
-
 
 # Fungsi untuk membuat pivot table suhu per station dan wd
 def create_station_temp_wind_df(df):
@@ -273,7 +259,7 @@ end_date = filtered_df['date_time'].max().strftime('%Y-%m-%d')
 
 # Menu di Side Bar
 menu = st.sidebar.selectbox(
-   'Menu', options=['Temperature & Wind Direction', 'Temperature Trends', 'PM2.5', 'Station', 'Treshold Breach']
+   'Menu', options=['Temperature & Wind Direction', 'Pollutan Trend By Month', 'PM2.5', 'Station', 'Treshold Breach']
 )
 
 # Bagian utama untuk visualisasi dan tabel
@@ -350,10 +336,9 @@ if menu == 'Temperature & Wind Direction':
     st.pyplot(plt)
 
 
-elif menu == 'Temperature Trends':
+elif menu == 'Pollutan Trend By Month':
     # Plot tren PM2.5 dan PM10 berdasarkan filter yang dipilih
-
-    plot_pollutant_trends(filtered_df, start_date, end_date)
+    pollutan_trend_by_month(all_df)
 
 elif menu == 'Treshold Breach' :
     plot_who_threshold_breach(filtered_df)
