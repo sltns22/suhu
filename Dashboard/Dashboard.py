@@ -189,7 +189,7 @@ def box_plot_station(df):
     st.pyplot(plt)
 
 # Membaca file CSV
-all_df = pd.read_csv('https://raw.githubusercontent.com/sltns22/suhu/master/Dashboard/all_df.csv')
+all_df = pd.read_csv('all_df.csv')
 
 # Konversi kolom 'date_time' menjadi tipe datetime
 all_df['date_time'] = pd.to_datetime(all_df['date_time'])
@@ -212,7 +212,7 @@ def filter_ytd(df, selected_year, selected_month):
 
 # Sidebar untuk memilih year dan month
 with st.sidebar:
-    st.image('https://raw.githubusercontent.com/sltns22/suhu/master/Dashboard/logo.png')
+    st.image('logo.png')
 
 st.sidebar.title("Filter Data")
 
@@ -241,7 +241,7 @@ end_date = filtered_df['date_time'].max().strftime('%Y-%m-%d')
 
 # Menu di Side Bar
 menu = st.sidebar.selectbox(
-   'Menu', options=['Home', 'Avg Pollutan', 'Rain Pollutan', 'Station', 'Treshold Breach']
+   'Menu', options=['Home', 'Temperature Trends', 'Rain Pollutan', 'Station', 'Treshold Breach']
 )
 
 # Bagian utama untuk visualisasi dan tabel
@@ -281,7 +281,7 @@ if menu == 'Home':
     # Tampilkan plot di Streamlit
     st.pyplot(plt)
 
-elif menu == 'Avg Pollutan':
+elif menu == 'Temperature Trends':
     # Plot tren PM2.5 dan PM10 berdasarkan filter yang dipilih
 
     plot_pollutant_trends(filtered_df, start_date, end_date)
