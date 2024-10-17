@@ -189,7 +189,7 @@ def box_plot_station(df):
     st.pyplot(plt)
 
 # Membaca file CSV
-all_df = pd.read_csv('all_df.csv')
+all_df = pd.read_csv('https://raw.githubusercontent.com/sltns22/suhu/master/Dashboard/all_df.csv')
 
 # Konversi kolom 'date_time' menjadi tipe datetime
 all_df['date_time'] = pd.to_datetime(all_df['date_time'])
@@ -212,7 +212,7 @@ def filter_ytd(df, selected_year, selected_month):
 
 # Sidebar untuk memilih year dan month
 with st.sidebar:
-    st.image('logo.png')
+    st.image('https://raw.githubusercontent.com/sltns22/suhu/master/Dashboard/logo.png')
 
 st.sidebar.title("Filter Data")
 
