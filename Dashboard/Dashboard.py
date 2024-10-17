@@ -111,49 +111,54 @@ def plot_who_threshold_breach(df):
     st.pyplot(plt)
 
 def scatter_plot_rain_polutan(df):
-    # Scatter plot between Temperature and PM2.5
-    plt.figure(figsize=(5,3))
-    sns.scatterplot(x='TEMP', y='PM2.5', hue='station', data=df, alpha=0.5)
-   
-    # Mengatur rotasi x-axis dan warna ticks
-    plt.xticks(rotation=45, color='white', fontsize=5)
-    plt.yticks(color='white', fontsize=5)
-    plt.xlabel('TEMP', color='white', fontsize=7)
-    plt.ylabel('PM2.5', color='white', fontsize=7)
-
-    # Mengatur posisi legend di luar plot
-    plt.legend(title='station', loc='upper left', bbox_to_anchor=(1, 1), title_fontsize='8', labelcolor='white',fontsize=5, frameon=False)
-    plt.title('Pengaruh Suhu terhadap PM2.5')
-    st.pyplot(plt)
-
-    # Scatter plot between Wind Speed and PM2.5
-    plt.figure(figsize=(5,3))
-    sns.scatterplot(x='WSPM', y='PM2.5', hue='station', data=df, alpha=0.5)
-    plt.title('Pengaruh Kecepatan Angin terhadap PM2.5')
+    Suhu_V_PM25 , Angin_V_pm25, Hujan_V_PM25 = st.tabs(['Suhu v PM2.5', 'Angin v PM2.5', 'Hujan v PM2.5'])
     
-    # Mengatur rotasi x-axis dan warna ticks
-    plt.xticks(rotation=45, color='white', fontsize=5)
-    plt.yticks(color='white', fontsize=5)
-    plt.xlabel('WSPM', color='white', fontsize=7)
-    plt.ylabel('PM2.5', color='white', fontsize=7)
+    with Suhu_V_PM25 :
+        # Scatter plot between Temperature and PM2.5
+        plt.figure(figsize=(5,3))
+        sns.scatterplot(x='TEMP', y='PM2.5', hue='station', data=df, alpha=0.5)
+    
+        # Mengatur rotasi x-axis dan warna ticks
+        plt.xticks(rotation=45, color='white', fontsize=5)
+        plt.yticks(color='white', fontsize=5)
+        plt.xlabel('TEMP', color='white', fontsize=7)
+        plt.ylabel('PM2.5', color='white', fontsize=7)
 
-    # Mengatur posisi legend di luar plot
-    plt.legend(title='Wind Direction', loc='upper left', bbox_to_anchor=(1, 1), title_fontsize='8', labelcolor='white',fontsize=5, frameon=False)
-    st.pyplot(plt)
+        # Mengatur posisi legend di luar plot
+        plt.legend(title='station', loc='upper left', bbox_to_anchor=(1, 1), title_fontsize='8', labelcolor='white',fontsize=5, frameon=False)
+        plt.title('Pengaruh Suhu terhadap PM2.5')
+        st.pyplot(plt)
 
-    # Scatter plot between Rain and PM2.5
-    plt.figure(figsize=(5,3))
-    sns.scatterplot(x='RAIN', y='PM2.5', hue='station', data=df, alpha=0.5)
-    plt.title('Pengaruh Curah Hujan terhadap PM2.5')
-    # Mengatur rotasi x-axis dan warna ticks
-    plt.xticks(rotation=45, color='white', fontsize=5)
-    plt.yticks(color='white', fontsize=5)
-    plt.xlabel('RAIN', color='white', fontsize=7)
-    plt.ylabel('PM2.5', color='white', fontsize=7)
+    with Angin_V_pm25 :
+        # Scatter plot between Wind Speed and PM2.5
+        plt.figure(figsize=(5,3))
+        sns.scatterplot(x='WSPM', y='PM2.5', hue='station', data=df, alpha=0.5)
+        plt.title('Pengaruh Kecepatan Angin terhadap PM2.5')
+        
+        # Mengatur rotasi x-axis dan warna ticks
+        plt.xticks(rotation=45, color='white', fontsize=5)
+        plt.yticks(color='white', fontsize=5)
+        plt.xlabel('WSPM', color='white', fontsize=7)
+        plt.ylabel('PM2.5', color='white', fontsize=7)
 
-    # Mengatur posisi legend di luar plot
-    plt.legend(title='stataion', loc='upper left', bbox_to_anchor=(1, 1), title_fontsize='8', labelcolor='white',fontsize=5, frameon=False)
-    st.pyplot(plt)
+        # Mengatur posisi legend di luar plot
+        plt.legend(title='Wind Direction', loc='upper left', bbox_to_anchor=(1, 1), title_fontsize='8', labelcolor='white',fontsize=5, frameon=False)
+        st.pyplot(plt)
+
+    with Hujan_V_PM25 :
+        # Scatter plot between Rain and PM2.5
+        plt.figure(figsize=(5,3))
+        sns.scatterplot(x='RAIN', y='PM2.5', hue='station', data=df, alpha=0.5)
+        plt.title('Pengaruh Curah Hujan terhadap PM2.5')
+        # Mengatur rotasi x-axis dan warna ticks
+        plt.xticks(rotation=45, color='white', fontsize=5)
+        plt.yticks(color='white', fontsize=5)
+        plt.xlabel('RAIN', color='white', fontsize=7)
+        plt.ylabel('PM2.5', color='white', fontsize=7)
+
+        # Mengatur posisi legend di luar plot
+        plt.legend(title='stataion', loc='upper left', bbox_to_anchor=(1, 1), title_fontsize='8', labelcolor='white',fontsize=5, frameon=False)
+        st.pyplot(plt)
 
 def box_plot_station(df):
 
@@ -241,7 +246,7 @@ end_date = filtered_df['date_time'].max().strftime('%Y-%m-%d')
 
 # Menu di Side Bar
 menu = st.sidebar.selectbox(
-   'Menu', options=['Home', 'Temperature Trends', 'Rain Pollutan', 'Station', 'Treshold Breach']
+   'Menu', options=['Home', 'Temperature Trends', 'PM2.5', 'Station', 'Treshold Breach']
 )
 
 # Bagian utama untuk visualisasi dan tabel
@@ -290,7 +295,7 @@ elif menu == 'Treshold Breach' :
     st.title('Treshold Breach - Pelampauan Ambang Batas WHO')
     plot_who_threshold_breach(filtered_df)
 
-elif menu == 'Rain Pollutan' :
+elif menu == 'PM2.5' :
         scatter_plot_rain_polutan(filtered_df)
 
 elif menu == 'Station' :
